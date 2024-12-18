@@ -1,0 +1,125 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum UserRole {
+  Admin
+  Mitra
+  Staff
+  User
+}
+
+enum collaborateType {
+  MoU
+  MoA
+  IA
+}
+
+enum headingType {
+  Kerjasama
+}
+
+enum statusType {
+  Aktif
+  NonAktif
+  InProcess
+}
+
+enum chartype {
+  Baru
+  Perpanjang
+}
+
+enum agreements {
+  Agree
+  Disagree
+}
+
+enum notif {
+  false
+  true
+}
+
+model User {
+  id         String   @id @default(cuid())
+  role       UserRole @default(User)
+  name       String
+  position   String
+  agency     String
+  email      String   @unique
+  password   String
+  profileUrl String   @default("https://tl.vhv.rs/dpng/s/541-5413387_log-in-sign-up-micro-environment-diagram-hd.png")
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Repository {
+  id            Int        @id @default(autoincrement())
+  study_program String
+  faculty       String
+  title         String
+  char          chartype   @default(Baru)
+  type          String
+  comment       String?
+  upload_file   String
+  status        statusType @default(Aktif)
+  agreement     agreements @default(Agree)
+}
+
+model Notification {
+  id               Int      @id @default(autoincrement())
+  title            String
+  description      String
+  notificationDate DateTime
+  readStatus       Boolean  @default(false)
+  category         String
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+// model Submission {
+//   id     Int        @id @default(autoincrement())
+//   mitra  String
+//   status statusType @default(InProcess)
+// }
+
+// model MoUSubmission {
+//   id        Int      @id @default(autoincrement())
+//   study     String
+//   faculty   String
+//   type      chartype @default(Baru)
+//   fileUrl   String
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+// }
+
+// model MoASubmission {
+//   id        Int      @id @default(autoincrement())
+//   study     String
+//   faculty   String
+//   type      chartype @default(New)
+//   fileUrl   String
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+// }
+
+// model AiSubmission {
+//   id        Int      @id @default(autoincrement())
+//   study     String
+//   faculty   String
+//   type      chartype @default(New)
+//   fileUrl   String
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+// }
