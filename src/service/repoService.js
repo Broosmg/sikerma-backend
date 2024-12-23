@@ -2,9 +2,12 @@ const yup = require("yup");
 const { insertRepository, editRepository, findRepositories, findRepositoryById, deleteRepository } = require("../repository/repoRepository");
 
 const repositorySchema = yup.object().shape({
-  study_program: yup.string(),
-  faculty: yup.string(),
-  title: yup.string(),
+  name_of_the_proposer: yup.string(),
+  position: yup.string(),
+  partner_agencies: yup.string(),
+  scope: yup.string(),
+  country: yup.string(),
+  agency_category: yup.string(),
   type: yup.string(),
   comment: yup.string(),
   upload_file: yup.string(),

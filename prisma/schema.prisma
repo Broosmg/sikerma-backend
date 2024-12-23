@@ -51,6 +51,18 @@ enum notif {
   true
 }
 
+enum scope {
+  Internasional
+  Domestik
+}
+
+enum category {
+  Akademik
+  Pemerintah
+  Industri
+  Organisasi
+}
+
 model User {
   id         String   @id @default(cuid())
   role       UserRole @default(User)
@@ -65,16 +77,38 @@ model User {
 }
 
 model Repository {
-  id            Int        @id @default(autoincrement())
-  study_program String
-  faculty       String
-  title         String
-  char          chartype   @default(Baru)
-  type          String
-  comment       String?
-  upload_file   String
-  status        statusType @default(Aktif)
-  agreement     agreements @default(Agree)
+  id                   Int             @id @default(autoincrement())
+  name_of_the_proposer String
+  position             String
+  partner_agencies     String
+  scope                scope           @default(Internasional)
+  country              String
+  agency_category      category        @default(Akademik)
+  type                 collaborateType @default(MoU)
+  comment              String?
+  upload_file          String
+  status               statusType      @default(Aktif)
+  agreement            agreements      @default(Agree)
+  createdAt            DateTime        @default(now())
+  updatedAt            DateTime        @updatedAt
+}
+
+model Extension {
+  id                   Int             @id @default(autoincrement())
+  name_of_the_proposer String
+  position             String
+  partner_agencies     String
+  scope                scope           @default(Domestik)
+  country              String
+  agency_category      category        @default(Akademik)
+  type                 collaborateType @default(MoU)
+  document_number      String
+  start                String
+  end                  String
+  comment              String?
+  upload_file          String
+  status               statusType      @default(NonAktif)
+  agreement            agreements      @default(Agree)
 }
 
 model Notification {
@@ -87,39 +121,3 @@ model Notification {
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 }
-
-// model Submission {
-//   id     Int        @id @default(autoincrement())
-//   mitra  String
-//   status statusType @default(InProcess)
-// }
-
-// model MoUSubmission {
-//   id        Int      @id @default(autoincrement())
-//   study     String
-//   faculty   String
-//   type      chartype @default(Baru)
-//   fileUrl   String
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
-// }
-
-// model MoASubmission {
-//   id        Int      @id @default(autoincrement())
-//   study     String
-//   faculty   String
-//   type      chartype @default(New)
-//   fileUrl   String
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
-// }
-
-// model AiSubmission {
-//   id        Int      @id @default(autoincrement())
-//   study     String
-//   faculty   String
-//   type      chartype @default(New)
-//   fileUrl   String
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
-// }

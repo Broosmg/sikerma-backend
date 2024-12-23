@@ -53,7 +53,7 @@ router.patch("/repository/:id", authenticateToken, async (req, res) => {
 
     res.status(200).send({
       data: repository,
-      message: "repository profile updated successfully.",
+      message: "repository Edit updated successfully.",
     });
   } catch (error) {
     res.status(400).send(error.message);

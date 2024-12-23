@@ -3,10 +3,8 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 const userController = require("./controllers/userController");
 const repoController = require("./controllers/repoController");
+const extensController = require("./controllers/extensController");
 const notifController = require("./controllers/notifController");
-// const submissionController = require("./controllers/submissionController");
-// const mouController = require("./controllers/mouController");
-// const moaController = require("./controllers/moaController");
 
 dotenv.config();
 const app = express();
@@ -16,10 +14,8 @@ app.use(express.json());
 
 app.use("/users", userController);
 app.use("/", repoController);
+app.use("/", extensController);
 app.use("/", notifController);
-// app.use("/submission", submissionController);
-// app.use("/mousubmission", mouController);
-// app.use("moasubmission", moaController);
 
 app.get("/", (req, res) => {
   res.send({
