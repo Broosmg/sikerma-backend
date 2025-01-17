@@ -10,7 +10,10 @@ const repositorySchema = yup.object().shape({
   agency_category: yup.string(),
   type: yup.string(),
   comment: yup.string(),
-  upload_file: yup.string(),
+  upload_file: yup
+    .string()
+    .matches(/\.(doc|pdf)$/i, "Only .docx and .pdf files are allowed!") // Validasi ekstensi file
+    .required("Upload file is required!"),
 });
 
 const createRepository = async (newRepositoryData) => {

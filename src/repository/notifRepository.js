@@ -11,7 +11,7 @@ const createNotification = async (req, res) => {
         title,
         description,
         category,
-        notificationDate: new Date(notificationDate), // Pastikan format tanggal benar
+        notificationDate: new Date(notificationDate),
       },
     });
 
@@ -69,8 +69,8 @@ const updateNotification = async (req, res) => {
         title,
         description,
         category,
-        notificationDate: new Date(notificationDate), // Pastikan format tanggal benar
-        readStatus: readStatus || false, // Jika tidak ada, default tetap false
+        notificationDate: new Date(notificationDate),
+        readStatus: readStatus || false,
       },
     });
 

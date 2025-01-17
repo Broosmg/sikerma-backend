@@ -1,10 +1,11 @@
 const express = require("express");
 const { createRepository, getAllRepositories, getRepositoryById, editRepositoryById, deleteRepositoryById } = require("../service/repoService");
 const { authenticateToken } = require("../middleware/auth.middleware");
+const uploadFile = require("../middleware/upload.middleware");
 
 const router = express.Router();
 
-router.post("/repository", async (req, res) => {
+router.post("/repository", uploadFile, async (req, res) => {
   try {
     const newRepositoryData = req.body;
     const repository = await createRepository(newRepositoryData);
