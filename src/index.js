@@ -6,6 +6,7 @@ const userController = require("./controllers/userController");
 const repoController = require("./controllers/repoController");
 const extensController = require("./controllers/extensController");
 const notifController = require("./controllers/notifController");
+const tempController = require("./controllers/tempController");
 
 dotenv.config();
 const app = express();
@@ -18,6 +19,7 @@ app.use("/users", userController);
 app.use("/", repoController);
 app.use("/", extensController);
 app.use("/", notifController);
+app.use("/", tempController);
 
 app.get("/", (req, res) => {
   res.send({

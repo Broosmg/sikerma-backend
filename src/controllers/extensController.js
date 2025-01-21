@@ -1,10 +1,11 @@
 const express = require("express");
 const { createExtension, getAllExtentions, getExtensionById, editExtensionById, deleteExtensionById } = require("../service/extensService");
 const { authenticateToken } = require("../middleware/auth.middleware");
+const uploadFile = require("../middleware/uploadExtens.middleware");
 
 const router = express.Router();
 
-router.post("/extension", async (req, res) => {
+router.post("/extension", uploadFile, async (req, res) => {
   try {
     const newExtensionData = req.body;
     const extension = await createExtension(newExtensionData);
