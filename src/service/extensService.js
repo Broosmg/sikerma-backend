@@ -13,7 +13,10 @@ const extensionSchema = yup.object().shape({
   start: yup.string(),
   end: yup.string(),
   comment: yup.string(),
-  upload_file: yup.string(),
+  upload_file: yup
+    .string()
+    .matches(/\.(doc|pdf)$/i, "Only .docx and .pdf files are allowed!") // Validasi ekstensi file
+    .required("Upload file is required!"),
 });
 
 const createExtension = async (newExtensionData) => {
