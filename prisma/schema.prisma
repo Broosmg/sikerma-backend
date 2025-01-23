@@ -126,3 +126,21 @@ model Template {
   id          Int    @id @default(autoincrement())
   upload_file String
 }
+
+model Adden {
+  id                   Int             @id @default(autoincrement())
+  name_of_the_proposer String
+  position             String
+  partner_agencies     String
+  scope                scope           @default(Domestik)
+  country              String
+  agency_category      category        @default(Akademik)
+  type                 collaborateType @default(MoU)
+  document_number      String
+  start                String
+  end                  String
+  comment              String?
+  upload_file          String
+  status               statusType      @default(NonAktif)
+  agreement            agreements      @default(Agree)
+}
