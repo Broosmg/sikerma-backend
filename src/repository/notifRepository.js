@@ -1,105 +1,61 @@
-const { PrismaClient } = require("@prisma/client");
-const prisma = new PrismaClient();
+const prisma = require("../config/db");
 
-// Create new notification
-const createNotification = async (req, res) => {
-  try {
-    const { title, description, category, notificationDate } = req.body;
-
-    const notification = await prisma.notification.create({
-      data: {
-        title,
-        description,
-        category,
-        notificationDate: new Date(notificationDate),
-      },
-    });
-
-    res.status(201).json(notification);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Failed to create notification" });
-  }
+const insertNotification = async (newNotificationData) => {
+  const notification = await prisma.notification.create({
+    data: {
+      title: newNotificationData.title,
+      description: newNotificationData.description,
+      readStatus: newNotificationData.readStatus ?? false,
+      category: newNotificationData.category,
+      end_date: newNotificationData.end_date,
+    },
+  });
+  return notification;
 };
 
-// Get all notifications
-const getAllNotifications = async (req, res) => {
-  try {
-    const notifications = await prisma.notification.findMany({
-      orderBy: {
-        createdAt: "desc",
-      },
-    });
-
-    res.status(200).json(notifications);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Failed to fetch notifications" });
-  }
+const editNotification = async (id, notificationData) => {
+  const notification = await prisma.notification.update({
+    where: {
+      id,
+    },
+    data: {
+      title: notificationData.title,
+      description: notificationData.description,
+      notificationDate: notificationData.notificationDate,
+      readStatus: notificationData.readStatus,
+      category: notificationData.category,
+      end_date: notificationData.end_date,
+    },
+  });
+  return notification;
 };
 
-// Get notification by ID
-const getNotificationById = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const notification = await prisma.notification.findUnique({
-      where: { id: Number(id) },
-    });
-
-    if (!notification) {
-      return res.status(404).json({ error: "Notification not found" });
-    }
-
-    res.status(200).json(notification);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Failed to fetch notification" });
-  }
+const findNotifications = async () => {
+  const notifications = await prisma.notification.findMany();
+  return notifications;
 };
 
-// Update notification by ID
-const updateNotification = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { title, description, category, notificationDate, readStatus } = req.body;
-
-    const updatedNotification = await prisma.notification.update({
-      where: { id: Number(id) },
-      data: {
-        title,
-        description,
-        category,
-        notificationDate: new Date(notificationDate),
-        readStatus: readStatus || false,
-      },
-    });
-
-    res.status(200).json(updatedNotification);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Failed to update notification" });
-  }
+const findNotificationById = async (id) => {
+  const notification = await prisma.notification.findUnique({
+    where: {
+      id: parseInt(id, 10),
+    },
+  });
+  return notification;
 };
 
-// Delete notification by ID
-const deleteNotification = async (req, res) => {
-  try {
-    const { id } = req.params;
-    await prisma.notification.delete({
-      where: { id: Number(id) },
-    });
-
-    res.status(204).send();
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Failed to delete notification" });
-  }
+const deleteNotification = async (id) => {
+  await prisma.notification.delete({
+    where: {
+      id,
+    },
+  });
 };
 
 module.exports = {
-  createNotification,
-  getAllNotifications,
-  getNotificationById,
-  updateNotification,
+  insertNotification,
+  editNotification,
+  findNotifications,
+  findNotificationById,
   deleteNotification,
 };

@@ -1,11 +1,10 @@
 const express = require("express");
-const { createNotification, getAllNotifications, getNotificationById, updateNotification, deleteNotification } = require("../service/notifService");
+const { createNotification, getAllNotifications, getNotificationById, editNotificationById, deleteNotificationById } = require("../service/notifService");
 const { authenticateToken } = require("../middleware/auth.middleware");
 
 const router = express.Router();
 
-// Route untuk membuat notifikasi baru
-router.post("/notifications", async (req, res) => {
+router.post("/notification", authenticateToken, async (req, res) => {
   try {
     const newNotificationData = req.body;
     const notification = await createNotification(newNotificationData);
@@ -19,11 +18,9 @@ router.post("/notifications", async (req, res) => {
   }
 });
 
-// Route untuk mendapatkan semua notifikasi
-router.get("/notifications", authenticateToken, async (req, res) => {
+router.get("/notification", authenticateToken, async (req, res) => {
   try {
     const notifications = await getAllNotifications();
-
     res.status(200).send({
       data: notifications,
       message: "Notifications retrieved successfully.",
@@ -33,12 +30,10 @@ router.get("/notifications", authenticateToken, async (req, res) => {
   }
 });
 
-// Route untuk mendapatkan notifikasi berdasarkan ID
-router.get("/notifications/:id", authenticateToken, async (req, res) => {
+router.get("/notification/:id", authenticateToken, async (req, res) => {
   try {
-    const notificationId = req.params.id;
+    const notificationId = Number(req.params.id);
     const notification = await getNotificationById(notificationId);
-
     res.status(200).send({
       data: notification,
       message: "Notification retrieved successfully.",
@@ -48,15 +43,13 @@ router.get("/notifications/:id", authenticateToken, async (req, res) => {
   }
 });
 
-// Route untuk memperbarui notifikasi berdasarkan ID
-router.patch("/notifications/:id", authenticateToken, async (req, res) => {
+router.patch("/notification/:id", authenticateToken, async (req, res) => {
   try {
-    const notificationId = req.params.id;
+    const notificationId = Number(req.params.id);
     const notificationData = req.body;
-    const updatedNotification = await updateNotification(notificationId, notificationData);
-
+    const notification = await editNotificationById(notificationId, notificationData);
     res.status(200).send({
-      data: updatedNotification,
+      data: notification,
       message: "Notification updated successfully.",
     });
   } catch (error) {
@@ -64,12 +57,10 @@ router.patch("/notifications/:id", authenticateToken, async (req, res) => {
   }
 });
 
-// Route untuk menghapus notifikasi berdasarkan ID
-router.delete("/notifications/:id", authenticateToken, async (req, res) => {
+router.delete("/notification/:id", authenticateToken, async (req, res) => {
   try {
-    const notificationId = req.params.id;
-    await deleteNotification(notificationId);
-
+    const notificationId = Number(req.params.id);
+    await deleteNotificationById(notificationId);
     res.status(200).send("Notification deleted successfully.");
   } catch (error) {
     res.status(400).send(error.message);

@@ -1,87 +1,64 @@
-const { PrismaClient } = require("@prisma/client");
-const prisma = new PrismaClient();
+const yup = require("yup");
+const { insertNotification, editNotification, findNotifications, findNotificationById, deleteNotification } = require("../repository/notifRepository");
+const { format } = require("date-fns");
 
-// Function to create a new notification
-const createNotification = async (data) => {
-  const { title, description, category, notificationDate } = data;
+const notificationSchema = yup.object().shape({
+  title: yup.string().required("Title is required"),
+  description: yup.string().required("Description is required"),
+  readStatus: yup.boolean().default(false),
+  category: yup.string().required("Category is required"),
+  end_date: yup.string(),
+});
 
-  // Validasi jika diperlukan
-  if (!title || !description || !category || !notificationDate) {
-    throw new Error("Missing required fields");
+const createNotification = async (newNotificationData) => {
+  await notificationSchema.validate(newNotificationData, { abortEarly: false });
+
+  if (newNotificationData.end_date) {
+    try {
+      // Konversi end_date menjadi objek Date
+      const parsedDate = new Date(newNotificationData.end_date);
+
+      if (!isNaN(parsedDate.getTime())) {
+        // Format hasil menjadi DD-MM-YYYY tanpa locale
+        newNotificationData.end_date = format(parsedDate, "mm-dd-yyyy");
+      } else {
+        throw new Error("Invalid end_date format");
+      }
+    } catch (error) {
+      throw new Error("Invalid end_date format");
+    }
   }
 
-  const newNotification = await prisma.notification.create({
-    data: {
-      title,
-      description,
-      category,
-      notificationDate: new Date(notificationDate), // Pastikan format tanggal benar
-    },
-  });
-
-  return newNotification;
-};
-
-// Function to get all notifications
-const getAllNotifications = async () => {
-  const notifications = await prisma.notification.findMany({
-    orderBy: {
-      createdAt: "desc",
-    },
-  });
-
-  return notifications;
-};
-
-// Function to get a notification by ID
-const getNotificationById = async (id) => {
-  const notification = await prisma.notification.findUnique({
-    where: { id: Number(id) },
-  });
-
-  if (!notification) {
-    throw new Error("Notification not found");
-  }
-
+  const notification = await insertNotification(newNotificationData);
   return notification;
 };
 
-// Function to update a notification by ID
-const updateNotification = async (id, data) => {
-  const { title, description, category, notificationDate, readStatus } = data;
-
-  // Validasi jika diperlukan
-  if (!title || !description || !category || !notificationDate) {
-    throw new Error("Missing required fields");
-  }
-
-  const updatedNotification = await prisma.notification.update({
-    where: { id: Number(id) },
-    data: {
-      title,
-      description,
-      category,
-      notificationDate: new Date(notificationDate), // Pastikan format tanggal benar
-      readStatus: readStatus || false, // Default ke false jika tidak disediakan
-    },
-  });
-
-  return updatedNotification;
+const getAllNotifications = async () => {
+  return await findNotifications();
 };
 
-// Function to delete a notification by ID
-const deleteNotification = async (id) => {
-  const deletedNotification = await prisma.notification.delete({
-    where: { id: Number(id) },
-  });
+const getNotificationById = async (id) => {
+  const notification = await findNotificationById(id);
+  if (!notification) {
+    throw new Error("Notification not found.");
+  }
+  return notification;
+};
 
-  return deletedNotification;
+const editNotificationById = async (id, notificationData) => {
+  await getNotificationById(id);
+  return await editNotification(id, notificationData);
+};
+
+const deleteNotificationById = async (id) => {
+  await getNotificationById(id);
+  await deleteNotification(id);
 };
 
 module.exports = {
   createNotification,
   getAllNotifications,
   getNotificationById,
-  updateNotification,
-  deleteNotification,
+  editNotificationById,
+  deleteNotificationById,
 };

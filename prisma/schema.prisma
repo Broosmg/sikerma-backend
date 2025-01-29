@@ -47,8 +47,8 @@ enum agreements {
 }
 
 enum notif {
-  false
-  true
+  False
+  True
 }
 
 enum scope {
@@ -115,9 +115,10 @@ model Notification {
   id               Int      @id @default(autoincrement())
   title            String
   description      String
-  notificationDate DateTime
-  readStatus       Boolean  @default(false)
+  notificationDate DateTime @default(now())
+  readStatus       notif    @default(False)
   category         String
+  end_date         String
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 }
@@ -127,7 +128,7 @@ model Template {
   upload_file String
 }
 
-model Adden {
+model Addendum {
   id                   Int             @id @default(autoincrement())
   name_of_the_proposer String
   position             String
