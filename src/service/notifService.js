@@ -20,7 +20,7 @@ const createNotification = async (newNotificationData) => {
 
       if (!isNaN(parsedDate.getTime())) {
         // Format hasil menjadi DD-MM-YYYY tanpa locale
-        newNotificationData.end_date = format(parsedDate, "mm-dd-yyyy");
+        newNotificationData.end_date = format(parsedDate, "dd-MM-yyyy");
       } else {
         throw new Error("Invalid end_date format");
       }
