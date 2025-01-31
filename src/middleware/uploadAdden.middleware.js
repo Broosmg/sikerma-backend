@@ -46,7 +46,7 @@ const uploadFile = (req, res, next) => {
 
       try {
         // Simpan ke database menggunakan Prisma
-        const newEntry = await prisma.extension.create({
+        const newEntry = await prisma.addendum.create({
           data: {
             name_of_the_proposer: req.body.name_of_the_proposer,
             position: req.body.position,

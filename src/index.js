@@ -8,6 +8,7 @@ const extensController = require("./controllers/extensController");
 const notifController = require("./controllers/notifController");
 const tempController = require("./controllers/tempController");
 const addenController = require("./controllers/addenController");
+const statController = require("./controllers/statController");
 
 dotenv.config();
 const app = express();
@@ -17,11 +18,12 @@ app.use(express.json());
 app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
 app.use("/users", userController);
-app.use("/", repoController);
+app.use("/repository", repoController);
 app.use("/", extensController);
 app.use("/", notifController);
 app.use("/", tempController);
 app.use("/", addenController);
+app.use("/statistics", statController);
 
 app.get("/", (req, res) => {
   res.send({

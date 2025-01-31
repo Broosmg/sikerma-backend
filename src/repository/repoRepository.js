@@ -1,5 +1,6 @@
 const prisma = require("../config/db");
 
+// Fungsi untuk menambah repository
 const insertRepository = async (newRepositoryData) => {
   const repository = await prisma.repository.create({
     data: {
@@ -11,12 +12,16 @@ const insertRepository = async (newRepositoryData) => {
       agency_category: newRepositoryData.agency_category,
       type: newRepositoryData.type,
       comment: newRepositoryData.comment,
+      end_date: newRepositoryData.end_date,
       upload_file: newRepositoryData.upload_file,
+      userId: newRepositoryData.userId, // Relasi dengan user
     },
   });
+
   return repository;
 };
 
+// Fungsi untuk mengedit repository
 const editRepository = async (id, repositoryData) => {
   const repository = await prisma.repository.update({
     where: {
@@ -31,31 +36,46 @@ const editRepository = async (id, repositoryData) => {
       agency_category: repositoryData.agency_category,
       type: repositoryData.type,
       comment: repositoryData.comment,
+      end_date: repositoryData.end_date,
       upload_file: repositoryData.upload_file,
       status: repositoryData.status,
       agreement: repositoryData.agreement,
+      userId: repositoryData.userId, // Memastikan relasi dengan user tetap ada saat update
     },
   });
 
   return repository;
 };
 
-const findRepositories = async () => {
-  const repositories = await prisma.repository.findMany();
+// Fungsi untuk mencari repository berdasarkan ID
+const findRepositoryById = async (id) => {
+  const repository = await prisma.repository.findUnique({
+    where: {
+      id: parseInt(id, 10), // Pastikan id adalah angka
+    },
+    include: {
+      user: true, // Menyertakan data user yang terkait
+    },
+  });
+
+  return repository;
+};
+
+// Fungsi untuk mencari repositories berdasarkan userId
+const findRepositories = async (userId) => {
+  const repositories = await prisma.repository.findMany({
+    where: {
+      userId, // Filter berdasarkan userId
+    },
+    include: {
+      user: true, // Menyertakan data user yang terkait
+    },
+  });
 
   return repositories;
 };
 
-const findRepositoryById = async (id) => {
-  const repository = await prisma.repository.findUnique({
-    where: {
-      id: parseInt(id, 10),
-    },
-  });
-
-  return repository;
-};
-
+// Fungsi untuk menghapus repository
 const deleteRepository = async (id) => {
   await prisma.repository.delete({
     where: {
@@ -67,7 +87,7 @@ const deleteRepository = async (id) => {
 module.exports = {
   insertRepository,
   editRepository,
-  findRepositories,
   findRepositoryById,
+  findRepositories,
   deleteRepository,
 };

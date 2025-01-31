@@ -5,9 +5,11 @@ const uploadFile = require("../middleware/upload.middleware");
 
 const router = express.Router();
 
-router.post("/repository", uploadFile, async (req, res) => {
+router.post("/", authenticateToken, uploadFile, async (req, res) => {
   try {
+    const userId = req.user.id;
     const newRepositoryData = req.body;
+    newRepositoryData.userId = userId;
     const repository = await createRepository(newRepositoryData);
 
     res.status(201).send({
@@ -19,9 +21,10 @@ router.post("/repository", uploadFile, async (req, res) => {
   }
 });
 
-router.get("/repository", authenticateToken, async (req, res) => {
+router.get("/", authenticateToken, async (req, res) => {
   try {
-    const repositories = await getAllRepositories();
+    const userId = req.user.id;
+    const repositories = await getAllRepositories(userId);
 
     res.status(200).send({
       data: repositories,
@@ -32,7 +35,7 @@ router.get("/repository", authenticateToken, async (req, res) => {
   }
 });
 
-router.get("/repository/:id", authenticateToken, async (req, res) => {
+router.get("/:id", authenticateToken, async (req, res) => {
   try {
     const repositoryById = req.params.id;
     const repository = await getRepositoryById(repositoryById);
@@ -46,7 +49,7 @@ router.get("/repository/:id", authenticateToken, async (req, res) => {
   }
 });
 
-router.patch("/repository/:id", authenticateToken, async (req, res) => {
+router.patch("/:id", authenticateToken, async (req, res) => {
   try {
     const repositoryId = Number(req.params.id);
     const repositoryData = req.body;
@@ -61,7 +64,7 @@ router.patch("/repository/:id", authenticateToken, async (req, res) => {
   }
 });
 
-router.delete("/repository/:id", authenticateToken, async (req, res) => {
+router.delete("/:id", authenticateToken, async (req, res) => {
   try {
     const repositoryId = Number(req.params.id);
     await deleteRepositoryById(repositoryId);

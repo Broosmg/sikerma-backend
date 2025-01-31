@@ -15,7 +15,7 @@ generator client {
 
 enum UserRole {
   Admin
-  Mitra
+  Unit
   Staff
   User
 }
@@ -64,16 +64,17 @@ enum category {
 }
 
 model User {
-  id         String   @id @default(cuid())
-  role       UserRole @default(User)
-  name       String
-  position   String
-  agency     String
-  email      String   @unique
-  password   String
-  profileUrl String   @default("https://tl.vhv.rs/dpng/s/541-5413387_log-in-sign-up-micro-environment-diagram-hd.png")
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id           String       @id @default(cuid())
+  role         UserRole     @default(User)
+  name         String
+  position     String
+  agency       String
+  email        String       @unique
+  password     String
+  profileUrl   String       @default("https://tl.vhv.rs/dpng/s/541-5413387_log-in-sign-up-micro-environment-diagram-hd.png")
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  repositories Repository[]
 }
 
 model Repository {
@@ -86,11 +87,14 @@ model Repository {
   agency_category      category        @default(Akademik)
   type                 collaborateType @default(MoU)
   comment              String?
+  end_date             String?
   upload_file          String
   status               statusType      @default(Aktif)
   agreement            agreements      @default(Agree)
   createdAt            DateTime        @default(now())
   updatedAt            DateTime        @updatedAt
+  user                 User            @relation(fields: [userId], references: [id])
+  userId               String
 }
 
 model Extension {
@@ -144,4 +148,12 @@ model Addendum {
   upload_file          String
   status               statusType      @default(NonAktif)
   agreement            agreements      @default(Agree)
+}
+
+model Statistic {
+  id              Int             @id @default(autoincrement())
+  collaborateType collaborateType
+  count           Int             @default(0)
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
 }

@@ -10,10 +10,12 @@ const repositorySchema = yup.object().shape({
   agency_category: yup.string(),
   type: yup.string(),
   comment: yup.string(),
+  end_date: yup.string(),
   upload_file: yup
     .string()
     .matches(/\.(doc|pdf)$/i, "Only .docx and .pdf files are allowed!") // Validasi ekstensi file
     .required("Upload file is required!"),
+  userId: yup.string(),
 });
 
 const createRepository = async (newRepositoryData) => {
@@ -24,34 +26,45 @@ const createRepository = async (newRepositoryData) => {
   return repository;
 };
 
-const getAllRepositories = async () => {
-  const repository = await findRepositories();
-
-  return repository;
-};
-
 const getRepositoryById = async (id) => {
   const repository = await findRepositoryById(id);
 
   if (!repository) {
-    throw new Error("User not found.");
+    throw new Error("Repository not found.");
   }
 
   return repository;
 };
 
+const getAllRepositories = async (userId) => {
+  const repositories = await findRepositories(userId);
+
+  return repositories;
+};
+
 const editRepositoryById = async (id, repositoryData) => {
-  await getRepositoryById(id);
+  // Pastikan repository ada
+  const repository = await getRepositoryById(id);
 
-  const repository = editRepository(id, repositoryData);
+  // Jika perlu, bisa memvalidasi userId jika tidak sesuai dengan yang terdaftar pada repository
+  if (repository.userId !== repositoryData.userId) {
+    throw new Error("User ID mismatch.");
+  }
 
-  return repository;
+  // Melakukan update repository
+  const updatedRepository = await editRepository(id, repositoryData);
+
+  return updatedRepository;
 };
 
 const deleteRepositoryById = async (id) => {
-  await getRepositoryById(id);
+  // Pastikan repository ada
+  const repository = await getRepositoryById(id);
 
+  // Menghapus repository
   await deleteRepository(id);
+
+  return { message: "Repository deleted successfully" };
 };
 
 module.exports = {

@@ -56,9 +56,11 @@ const uploadFile = (req, res, next) => {
             agency_category: req.body.agency_category,
             type: req.body.type,
             comment: req.body.comment || null,
+            end_date: req.body.end_date || null,
             upload_file: filePath,
             status: req.body.status || "Aktif",
             agreement: req.body.agreement || "Agree",
+            userId: req.body.userId,
           },
         });
 
