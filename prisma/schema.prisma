@@ -64,17 +64,18 @@ enum category {
 }
 
 model User {
-  id           String       @id @default(cuid())
-  role         UserRole     @default(User)
+  id           String         @id @default(cuid())
+  role         UserRole       @default(User)
   name         String
   position     String
   agency       String
-  email        String       @unique
+  email        String         @unique
   password     String
-  profileUrl   String       @default("https://tl.vhv.rs/dpng/s/541-5413387_log-in-sign-up-micro-environment-diagram-hd.png")
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @updatedAt
+  profileUrl   String         @default("https://tl.vhv.rs/dpng/s/541-5413387_log-in-sign-up-micro-environment-diagram-hd.png")
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
   repositories Repository[]
+  Notification Notification[]
 }
 
 model Repository {
@@ -123,8 +124,11 @@ model Notification {
   readStatus       notif    @default(False)
   category         String
   end_date         String
+  schedule         DateTime
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
+  user             User     @relation(fields: [userId], references: [id])
+  userId           String
 }
 
 model Template {

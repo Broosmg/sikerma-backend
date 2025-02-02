@@ -6,7 +6,9 @@ const router = express.Router();
 
 router.post("/notification", authenticateToken, async (req, res) => {
   try {
+    const userId = req.user.id;
     const newNotificationData = req.body;
+    newNotificationData.userId = userId;
     const notification = await createNotification(newNotificationData);
 
     res.status(201).send({
@@ -20,7 +22,8 @@ router.post("/notification", authenticateToken, async (req, res) => {
 
 router.get("/notification", authenticateToken, async (req, res) => {
   try {
-    const notifications = await getAllNotifications();
+    const userId = req.user.id;
+    const notifications = await getAllNotifications(userId);
     res.status(200).send({
       data: notifications,
       message: "Notifications retrieved successfully.",
