@@ -42,26 +42,16 @@ const getAllRepositories = async (userId) => {
   return repositories;
 };
 
-const editRepositoryById = async (id, repositoryData) => {
-  // Pastikan repository ada
-  const repository = await getRepositoryById(id);
+const editRepositoryById = async (id, repositoryData, userRole) => {
+  await getRepositoryById(id);
 
-  // Jika perlu, bisa memvalidasi userId jika tidak sesuai dengan yang terdaftar pada repository
-  if (repository.userId !== repositoryData.userId) {
-    throw new Error("User ID mismatch.");
-  }
-
-  // Melakukan update repository
-  const updatedRepository = await editRepository(id, repositoryData);
-
-  return updatedRepository;
+  const repository = await editRepository(id, repositoryData, userRole);
+  return repository;
 };
 
 const deleteRepositoryById = async (id) => {
-  // Pastikan repository ada
-  const repository = await getRepositoryById(id);
+  await getRepositoryById(id);
 
-  // Menghapus repository
   await deleteRepository(id);
 
   return { message: "Repository deleted successfully" };

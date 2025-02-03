@@ -2,6 +2,7 @@ const express = require("express");
 const { createRepository, getAllRepositories, getRepositoryById, editRepositoryById, deleteRepositoryById } = require("../service/repoService");
 const { authenticateToken } = require("../middleware/auth.middleware");
 const uploadFile = require("../middleware/upload.middleware");
+const uploadFileEdit = require("../middleware/uploadEdit.middleware");
 
 const router = express.Router();
 
@@ -49,18 +50,20 @@ router.get("/:id", authenticateToken, async (req, res) => {
   }
 });
 
-router.patch("/:id", authenticateToken, async (req, res) => {
+router.patch("/:id", authenticateToken, uploadFileEdit, async (req, res) => {
   try {
-    const repositoryId = Number(req.params.id);
+    const repositoryId = parseInt(req.params.id);
     const repositoryData = req.body;
-    const repository = await editRepositoryById(repositoryId, repositoryData);
+    const userRole = req.user.role;
+
+    const repository = await editRepositoryById(repositoryId, repositoryData, userRole);
 
     res.status(200).send({
       data: repository,
-      message: "repository Edit updated successfully.",
+      message: "Repository updated successfully.",
     });
   } catch (error) {
-    res.status(400).send(error.message);
+    res.status(403).send(error.message);
   }
 });
 

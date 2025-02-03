@@ -1,6 +1,5 @@
 const prisma = require("../config/db");
 
-// Fungsi untuk menambah repository
 const insertRepository = async (newRepositoryData) => {
   const repository = await prisma.repository.create({
     data: {
@@ -14,15 +13,20 @@ const insertRepository = async (newRepositoryData) => {
       comment: newRepositoryData.comment,
       end_date: newRepositoryData.end_date,
       upload_file: newRepositoryData.upload_file,
-      userId: newRepositoryData.userId, // Relasi dengan user
+      userId: newRepositoryData.userId,
     },
   });
 
   return repository;
 };
 
-// Fungsi untuk mengedit repository
-const editRepository = async (id, repositoryData) => {
+const editRepository = async (id, repositoryData, userRole) => {
+  const allowedRoles = ["Admin", "Staff", "Unit"];
+
+  if (!allowedRoles.includes(userRole)) {
+    throw new Error("Unauthorized: Only Admin, Staff, or Unit can edit repository");
+  }
+
   const repository = await prisma.repository.update({
     where: {
       id,
@@ -38,23 +42,19 @@ const editRepository = async (id, repositoryData) => {
       comment: repositoryData.comment,
       end_date: repositoryData.end_date,
       upload_file: repositoryData.upload_file,
-      status: repositoryData.status,
-      agreement: repositoryData.agreement,
-      userId: repositoryData.userId, // Memastikan relasi dengan user tetap ada saat update
     },
   });
 
   return repository;
 };
 
-// Fungsi untuk mencari repository berdasarkan ID
 const findRepositoryById = async (id) => {
   const repository = await prisma.repository.findUnique({
     where: {
-      id: parseInt(id, 10), // Pastikan id adalah angka
+      id: parseInt(id, 10),
     },
     include: {
-      user: true, // Menyertakan data user yang terkait
+      user: true,
     },
   });
 
