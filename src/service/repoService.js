@@ -36,8 +36,8 @@ const getRepositoryById = async (id) => {
   return repository;
 };
 
-const getAllRepositories = async (userId) => {
-  const repositories = await findRepositories(userId);
+const getAllRepositories = async () => {
+  const repositories = await findRepositories();
 
   return repositories;
 };

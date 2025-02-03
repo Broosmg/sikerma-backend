@@ -62,15 +62,8 @@ const findRepositoryById = async (id) => {
 };
 
 // Fungsi untuk mencari repositories berdasarkan userId
-const findRepositories = async (userId) => {
-  const repositories = await prisma.repository.findMany({
-    where: {
-      userId, // Filter berdasarkan userId
-    },
-    include: {
-      user: true, // Menyertakan data user yang terkait
-    },
-  });
+const findRepositories = async () => {
+  const repositories = await prisma.repository.findMany();
 
   return repositories;
 };

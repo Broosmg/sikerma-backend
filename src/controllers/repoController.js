@@ -24,8 +24,7 @@ router.post("/", authenticateToken, uploadFile, async (req, res) => {
 
 router.get("/", authenticateToken, async (req, res) => {
   try {
-    const userId = req.user.id;
-    const repositories = await getAllRepositories(userId);
+    const repositories = await getAllRepositories();
 
     res.status(200).send({
       data: repositories,
